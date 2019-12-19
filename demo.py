@@ -22,6 +22,7 @@ from VascGraph.GraphIO import ReadStackMat, ReadPajek, WritePajek
 from VascGraph.Tools.CalcTools import fixG, FullyConnectedGraph
 from VascGraph.Tools.VisTools import visG
 import scipy.io as sio
+from mayavi import mlab
 
 if __name__=='__main__':
     
@@ -35,7 +36,7 @@ if __name__=='__main__':
     # setting sampling<1.5 generates very dense graphs that were hard to contract at the end
     sampling=1.0
     
-    speed_param=0.001 # speed of contraction process (smaller value-->faster dynamics)
+    speed_param=0.01 # speed of contraction process (smaller value-->faster dynamics)
     dist_param=0.01 # [0,1] controls contraction based on connectivitiy in graph
     med_param=1.0 # [0,1] controls contraction based on distance map (obtained from binary image)
     
@@ -43,10 +44,11 @@ if __name__=='__main__':
     # hyper parameters (modification on those is not suggested!)
     #-------------------------------------------------------------------------#
     #contraction
-    degree_threshold=10.0 # used to check if a node is a skeletal node
+    degree_threshold=5.0 # used to check if a node is a skeletal node
     clustering_resolution=1.0 # controls the amount of graph dicimation (due to clustering) at each step
     stop_param=0.005 # controls the convergence criterion
     n_free_iteration=10 #number of iteration without checking for convergence
+    
     #refinement
     area_param=50.0 # area of polygens to be decimated 
     poly_param=10 # number of nodes forming a polygon
@@ -58,7 +60,7 @@ if __name__=='__main__':
     #-------------------------------------------------------------------------#
 
     #load segmented angiogram
-    s=ReadStackMat('data/sim/data56noisy1/1.mat').GetOutput()
+    s=ReadStackMat('synth1.mat').GetOutput()
     
     #s=ReadStackMat('data/tpm/boston/mouseVesselSegmentation.mat').GetOutput()
     #s=s[200:300,250:300,250:300]
@@ -113,11 +115,11 @@ if __name__=='__main__':
     # Visulaize
     #-------------------------------------------------------------------------#
 
-    stack_plot=StackPlot(new_engine=True)
+    mlab.figure()
+    stack_plot=StackPlot()
     stack_plot.Update(s)
     graph_plot=GraphPlot()
     graph_plot.Update(loaded_g)
-
 
 
 
