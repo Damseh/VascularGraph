@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   width="348.29999"
+   height="147.60001"
+   viewBox="0 0 348.29999 147.60001"
+   sodipodi:docname="glasses.svg"
+   inkscape:export-filename="/home/rdamseh/GraphPaper2018V1/VascGraph/Skeletonize/models/glasses.png"
+   inkscape:export-xdpi="500"
+   inkscape:export-ydpi="500">
+  <metadata
+     id="metadata8">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs6">
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect4229"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect4229-7"
+       is_visible="true" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect4193"
+       is_visible="true" />
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1865"
+     inkscape:window-height="1056"
+     id="namedview4"
+     showgrid="false"
+     inkscape:zoom="1.8489809"
+     inkscape:cx="116.51085"
+     inkscape:cy="109.0244"
+     inkscape:window-x="1975"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg2" />
+  <path
+     style="opacity:1;fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:0.25400001;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     clip-path="none"
+     d="M 145.75566,18.34003 C 118.97538,18.359527 6.4577074,15.093857 28.38115,22.145953 87.073521,41.025479 200.5731,48.593135 200.64879,74.749468 200.62369,100.88449 88.325758,108.5167 29.697207,127.38033 c -21.8619017,7.03403 89.371353,3.71569 116.058453,3.74538 67.65533,2e-5 197.6772,-20.95359 197.67655,-57.475497 C 343.43086,37.129075 213.40957,18.340006 145.75566,18.34003 Z"
+     id="path4143"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="cscsccc"
+     inkscape:export-xdpi="500"
+     inkscape:export-ydpi="500" />
+</svg>
