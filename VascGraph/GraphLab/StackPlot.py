@@ -25,12 +25,17 @@ class StackPlotParam:
         
 class StackPlot:
     
-    def __init__(self, param=None, new_engine=False):
+    def __init__(self, s=None, param=None, new_engine=False):
         
         '''
         input: 
             param: object from StackPlotParam
         ''' 
+        
+        # if s is None:
+        #     print('Noe input surface model')
+        #     return
+        
         
         if param is None:
             param=StackPlotParam()
@@ -45,7 +50,7 @@ class StackPlot:
             e.start()
             
         # source
-        self.DataSource=scalar_field(np.ones((1,1,1)))
+        self.DataSource=scalar_field((np.random.rand(5,5,5)>0.5).astype(int))
         self.DataSource.origin=[0,0,0]
         self.Data=self.DataSource.scalar_data
         self.DataSource.origin=np.array([0,0,0])

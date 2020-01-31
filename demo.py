@@ -115,6 +115,7 @@ if __name__=='__main__':
     # Visulaize
     #-------------------------------------------------------------------------#
 
+    #from VascGraph.GraphLab import GraphPlot, StackPlot, MainDialogue
     mlab.figure()
     stack_plot=StackPlot()
     stack_plot.Update(s)

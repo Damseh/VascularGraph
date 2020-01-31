@@ -46,7 +46,7 @@ def AssignToClusters(pos, resolution=1.0):
 
 def CycleArea(corners):
     n = len(corners) # of corners
-    cross= [0.0,0.0,0.0]
+    cross= [0.0, 0.0, 0.0]
     for i in range(n):
         j = (i + 1) % n
         crss=np.cross(corners[i],corners[j])
@@ -59,10 +59,10 @@ def CycleAreaAll(corners):
         
     if len(corners):       
         n = np.shape(corners)[1] # of corners
-        cross= np.zeros((np.shape(corners)[0],np.shape(corners)[2]))
+        cross= np.zeros((np.shape(corners)[0], np.shape(corners)[2]))
         for i in range(n):
             j = (i + 1) % n
-            crss=np.cross(corners[:,i],corners[:,j])
+            crss=np.cross(corners[:,i], corners[:,j])
             cross=cross+crss
             #nrm+=np.linalg.norm(crss)
         area = np.linalg.norm(cross, axis=1) / 2.0

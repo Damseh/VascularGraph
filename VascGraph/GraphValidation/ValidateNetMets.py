@@ -8,8 +8,7 @@ Created on Tue May 21 08:56:18 2019
 
 
 import os
-import seaborn as sns
-sns.set_style('darkgrid')
+
 
 from VascGraph.Tools.CalcTools import prunG, reduceG,\
 getMiddleGraph, rescaleG, \
@@ -28,7 +27,7 @@ except: pass
 
 try:
     from matplotlib import pyplot as plt
-except:pass
+except: pass
 
 
 class ValidateNetMets:
@@ -39,6 +38,7 @@ class ValidateNetMets:
                  prune=False,
                  outputfolder='results',
                  sigma=[10,20,30,40,50,60]):
+
 
         self.Gr=Gr.copy()
         self.Ge=Ge.copy()
@@ -237,7 +237,15 @@ class ValidateNetMets:
                                            self.n_branches_e])
                 
     def plotDist(self, save=False, foldername=None):
-                    
+                 
+        try:
+            import seaborn as sns
+        except:
+            print('To run this function, \'seaborn\' sould be installed.')
+            return         
+            
+        sns.set_style('darkgrid')  
+        
         if foldername:
             pass
         else:

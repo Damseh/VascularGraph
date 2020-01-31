@@ -22,7 +22,7 @@ class WritePajek:
     def __stringizer(self, g):
         
         test_id=g.GetNodes()[0]
-        attr=['pos', 'r', 'type', 'branch', 'flow', 'pressure', 'velocity', 'po2', 'so2', 'velocity']
+        attr=['pos', 'r', 'd', 'type', 'branch', 'flow', 'pressure', 'velocity', 'po2', 'so2', 'velocity']
         attr_to_stringize=[]
         
         for i in attr:

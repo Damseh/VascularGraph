@@ -17,7 +17,6 @@ except: pass
 
 
 import numpy as np
-import h5py
 from scipy import sparse
 
 
@@ -26,6 +25,12 @@ class ReadVTrails:
     def __init__(self, filepath, sampling=1):
         
         from VascGraph.GeomGraph import Graph
+        
+        try:
+            import h5py
+        except:
+            print('To run this function, \'h5py\' sould be installed.')
+            return   
 
         # ---- read ----#
         f=h5py.File(filepath, 'r')

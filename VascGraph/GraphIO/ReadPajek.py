@@ -10,9 +10,10 @@ import sys
 try:
     sys.path.append('/home/rdamseh/GraphPaper2018V1')
 except: pass
-from VascGraph.Tools.CalcTools import *
 from VascGraph.GeomGraph import Graph, DiGraph
-
+from VascGraph.Tools.CalcTools import fixG
+import numpy as np
+import networkx as nx
 
 
 class ReadPajek():
@@ -47,12 +48,15 @@ class ReadPajek():
             G=Graph() 
         
         # build geometry
-        for i in range(G_init.number_of_nodes()):
-            node=G_init.node[str(i)]      
+        for i in list(G_init.nodes()):
+            
+            node=G_init.node[i]      
             
             # add node
-            n=int(node['id'].encode())
-            G.add_node(n-1)
+            #n=int(node['id'].encode())
+            
+            n=int(i)
+            G.add_node(n)
             
             #add position
             
@@ -62,79 +66,104 @@ class ReadPajek():
                 pos=node['pos'].encode()
             
             pos=pos.split(' ')
-            
             xyz=[]
-            for j in range(len(pos)):         
+            
+            for j in range(len(pos)): 
+                
                 try:                
                     value=float(pos[j])
                     xyz.append(value)
                 except:
+                    
                     try:
                         value=pos[j].split('[')
-                        xyz.append(float(value[1]))
+                        try:
+                            xyz.append(float(value[1]))
+                        except:
+                            value=value[1].split(',')
+                            xyz.append(float(value[0]))
                     except:
                         try:
                             value=pos[j].split(']')
-                            xyz.append(float(value[0]))
-                        except : pass
-            G.node[i]['pos']=np.array(xyz)
+                            try:
+                                xyz.append(float(value[0]))
+                            except:
+                                value=value[1].split(',')
+                                xyz.append(float(value[0]))                                
+                        except: 
+                            try:
+                                value=pos[j].split(',')
+                                xyz.append(float(value[0]))
+                            except: pass                  
+                    
+                    
+            G.node[n]['pos']=np.array(xyz)
             
             # add label
             try:
                 yORn=node['node'].encode()
                 if yORn=='False':
-                    G.node[i]['node']=False
+                    G.node[n]['node']=False
                 else:
-                    G.node[i]['node']=True
+                    G.node[n]['node']=True
             except:
                 pass
                
             # add radius
             try:
                 radius=node['d'].encode()
-                G.node[i]['r']=float(radius)
+                G.node[n]['d']=float(radius)
             except:
                 pass
             
             # add radius
             try:
                 radius=node['r'].encode()
-                G.node[i]['r']=float(radius)
+                G.node[n]['r']=float(radius)
             except:
                 pass
             
             # add radius
             try:
                 radius=node['r'].encode()
-                G.node[i]['r']=float(radius.split('[')[1].split(']')[0])
+                G.node[n]['r']=float(radius.split('[')[1].split(']')[0])
             except:
                 pass
+            
+            
+            # add radius
+            try:
+                radius=node['d'].encode()
+                G.node[n]['d']=float(radius.split('[')[1].split(']')[0])
+            except:
+                pass
+
                        
             # add type
             try:
                 t=node['type'].encode()
-                G.node[i]['type']=int(t)
+                G.node[n]['type']=int(t)
             except:
                 pass
  
             # add branch
             try:
                 b=node['branch'].encode()
-                G.node[i]['branch']=int(b)
+                G.node[n]['branch']=int(b)
             except:
                 pass
             
             # add inflow
             try:
                 b=node['inflow'].encode()
-                G.node[i]['inflow']=str(int(b))
+                G.node[n]['inflow']=str(int(b))
             except:
                 pass
             
             # add outflow
             try:
                 b=node['outflow'].encode()
-                G.node[i]['outflow']=str(int(b))
+                G.node[n]['outflow']=str(int(b))
             except:
                 pass
             
@@ -142,56 +171,56 @@ class ReadPajek():
             # add sink
             try:
                 b=node['sink'].encode()
-                G.node[i]['sink']=str(int(b))
+                G.node[n]['sink']=str(int(b))
             except:
                 pass
             
             # add source
             try:
                 b=node['source'].encode()
-                G.node[i]['source']=str(int(b))
+                G.node[n]['source']=str(int(b))
             except:
                 pass    
             
             # add root
             try:
                 b=node['root'].encode()
-                G.node[i]['root']=str(int(b))
+                G.node[n]['root']=str(int(b))
             except:
                 pass   
             
             # add flow
             try:
                 b=node['flow'].encode()
-                G.node[i]['flow']=float(b)
+                G.node[n]['flow']=float(b)
             except:
                 pass     
 
             # add pressure
             try:
                 b=node['pressure'].encode()
-                G.node[i]['pressure']=float(b)
+                G.node[n]['pressure']=float(b)
             except:
                 pass    
 
             # add velocity
             try:
                 b=node['velocity'].encode()
-                G.node[i]['velocity']=float(b)
+                G.node[n]['velocity']=float(b)
             except:
                 pass  
             
             # add velocity
             try:
                 b=node['so2'].encode()
-                G.node[i]['so2']=float(b)
+                G.node[n]['so2']=float(b)
             except:
                 pass  
 
             # add velocity
             try:
                 b=node['po2'].encode()
-                G.node[i]['po2']=float(b)
+                G.node[n]['po2']=float(b)
             except:
                 pass              
                                         
@@ -230,7 +259,7 @@ class ReadPajek():
         self.ReadFile()
                 
         if self.G is not None:
-            return self.G
+            return fixG(self.G)
         
         
         

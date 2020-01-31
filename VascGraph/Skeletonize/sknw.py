@@ -11,9 +11,6 @@ import networkx as nx
 
 from VascGraph.Tools.CalcTools import *
 
-from skimage.morphology import skeletonize_3d as skel
-from skimage import data
-
 from VascGraph.GeomGraph import Graph
 
 import scipy as sp
@@ -153,7 +150,14 @@ def draw_graph(img, graph, cn=255, ce=128):
 
 class Skel3D:
     
+  
     def __init__(self, image, method=1):
+        
+        try:
+            from skimage.morphology import skeletonize_3d as skel
+        except:
+            print('To run this function, \'scikit-image\' sould be installed.')
+            return  
         
         self.image=image
         self.Graph=None

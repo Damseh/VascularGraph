@@ -6,7 +6,6 @@ Created on Wed Feb  6 21:10:46 2019
 @author: rdamseh
 """
 from VascGraph.Tools.CalcTools import *
-import skimage as sk
 import scipy as sp
 import numpy as np
 
@@ -91,6 +90,12 @@ def BarModel(noisy=False):
 
 def RectangularModel(noisy=False):
     
+    try:
+        import skimage as sk
+    except:
+        print('To run this function, \'scikit-image\' sould be installed.')
+        return
+    
     import os
     import sys
     
@@ -112,6 +117,13 @@ def Rect1Model(noisy=False):
     import os
     import sys
     
+  
+    try:
+        import skimage as sk
+    except:
+        print('To run this function, \'scikit-image\' sould be installed.')
+        return  
+    
     cwd=os.path.dirname(os.path.realpath(__file__))
     print(cwd)
     path=cwd+'/models/'
@@ -128,6 +140,12 @@ def Shape1Model(noisy=False):
     
     import os
     import sys
+    
+    try:
+        import skimage as sk
+    except:
+        print('To run this function, \'scikit-image\' sould be installed.')
+        return
     
     cwd=os.path.dirname(os.path.realpath(__file__))
     print(cwd)
@@ -148,6 +166,12 @@ def GlassesModel(noisy=False):
     import os
     import sys
     
+    try:
+        import skimage as sk
+    except:
+        print('To run this function, \'scikit-image\' sould be installed.')
+        return
+    
     cwd=os.path.dirname(os.path.realpath(__file__))
     print(cwd)
     path=cwd+'/models/'
@@ -165,6 +189,12 @@ def TwoCirclesModel(noisy=False):
     
     import os
     import sys
+    
+    try:
+        import skimage as sk
+    except:
+        print('To run this function, \'scikit-image\' sould be installed.')
+        return    
     
     cwd=os.path.dirname(os.path.realpath(__file__))
     print(cwd)
@@ -184,6 +214,12 @@ def Circles2Model(noisy=False):
     import os
     import sys
     
+    try:
+        import skimage as sk
+    except:
+        print('To run this function, \'scikit-image\' sould be installed.')
+        return
+    
     cwd=os.path.dirname(os.path.realpath(__file__))
     print(cwd)
     path=cwd+'/models/'
@@ -199,8 +235,16 @@ def Circles2Model(noisy=False):
 
 def XModel(noisy=False):
     
+    
+    
     import os
     import sys
+    
+    try:
+        import skimage as sk
+    except:
+        print('To run this function, \'scikit-image\' sould be installed.')
+        return 
     
     cwd=os.path.dirname(os.path.realpath(__file__))
     print(cwd)
@@ -220,6 +264,12 @@ def CircleModel(noisy=False):
     import os
     import sys
     
+    try:
+        import skimage as sk
+    except:
+        print('To run this function, \'scikit-image\' sould be installed.')
+        return
+    
     cwd=os.path.dirname(os.path.realpath(__file__))
     print(cwd)
     path=cwd+'/models/'
@@ -237,6 +287,13 @@ def SquareModel(noisy=False):
     
     import os
     import sys
+    
+    
+    try:
+        import skimage as sk
+    except:
+        print('To run this function, \'scikit-image\' sould be installed.')
+        return
     
     cwd=os.path.dirname(os.path.realpath(__file__))
     print(cwd)

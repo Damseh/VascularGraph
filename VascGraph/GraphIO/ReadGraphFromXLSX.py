@@ -8,7 +8,6 @@ Created on Tue May  7 11:24:41 2019
 
 
 
-import pandas as pn
 from VascGraph.GeomGraph import Graph
 import numpy as np
 
@@ -16,6 +15,12 @@ class ReadGraphFromXLSX:
 
 
     def __init__(self, filename, graph=None):
+        
+        try:
+            import pandas as pn
+        except:
+            print('To run this function, \'pandas\' sould be installed.')
+            return        
         
         self.filename=filename
         self.xls=pn.read_excel(filename)

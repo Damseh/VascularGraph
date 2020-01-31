@@ -201,3 +201,50 @@ def ReadGraphfromMat(filename):
         G.node[i]['r']=r
 
     return G
+
+def getMIP(array=None, image_path=None, output_dir=None, output=True):
+    
+    try:
+        import SimpleITK as sitk
+    except:
+        print('To run this funtion, \'SimpleITK\' should be installed.')
+        return
+
+    if array is not None:
+        image=sitk.GetImageFromArray(array)
+        
+    if image_path is not None:
+        image = sitk.ReadImage(image_path)   
+        basename = os.path.basename(image_path)
+        if not os.path.isdir(output_dir):
+            os.makedirs(output_dir)
+            
+    image_size = image.GetSize()
+    for dim in range(3):
+        projection = sitk.MaximumProjection(image, dim)
+
+        if image_size[dim] % 2:  # odd number
+            voxel = [0, 0, 0]
+            voxel[dim] = (image_size[dim] - 1) / 2
+            origin = image.TransformIndexToPhysicalPoint(voxel)
+        else:  # even
+            voxel1 = np.array([0, 0, 0], int)
+            voxel2 = np.array([0, 0, 0], int)
+            voxel1[dim] = image_size[dim] / 2 - 1
+            voxel2[dim] = image_size[dim] / 2
+            point1 = np.array(image.TransformIndexToPhysicalPoint(voxel1.tolist()))
+            point2 = np.array(image.TransformIndexToPhysicalPoint(voxel2.tolist()))
+            origin = np.mean(np.vstack((point1, point2)), 0)
+        projection.SetOrigin(origin)
+        projection.SetDirection(image.GetDirection())
+     
+        if output_dir:
+            proj_basename = basename.replace('.nii.gz', '_mip_{}.nii.gz'.format(dim))
+            sitk.WriteImage(projection, os.path.join(output_dir, proj_basename))
+        
+    if output:
+        return sitk.GetArrayFromImage(projection)
+
+
+
+

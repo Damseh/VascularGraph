@@ -22,7 +22,6 @@ from mayavi.core.ui.api import MayaviScene, SceneEditor, \
                 MlabSceneModel
 import time
 
-import bezier as bz
 import numpy as np
 
 class ModifyGraph(HasTraits):
@@ -141,6 +140,13 @@ class ModifyGraph(HasTraits):
     
     def get_bezier(self, pnts):
                 
+        
+        try:
+            import bezier as bz
+        except:
+            print('To run this function, \'bezier\' sould be installed.')
+            return 
+        
         #to well-bended curve
         v1=(pnts[1]-pnts[0])/np.linalg.norm(pnts[1]-pnts[0])
         v2=(pnts[2]-pnts[3])/np.linalg.norm(pnts[2]-pnts[3])   
