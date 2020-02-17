@@ -1,0 +1,68 @@
+Metadata-Version: 1.2
+Name: VascGraph
+Version: 0.1.0
+Summary: Python package to generate graph-based anatomical model of vascular structures.
+Home-page: https://github.com/Damseh/VascGraph
+Author: Rafat Damseh
+Author-email: gotorafat@yahoo.com
+License: MIT license
+Description: =========
+        VascGraph
+        =========
+        
+        
+        .. image:: https://img.shields.io/pypi/v/VascGraph.svg
+                :target: https://pypi.python.org/pypi/VascGraph
+        
+        .. image:: https://img.shields.io/travis/Damseh/VascGraph.svg
+                :target: https://travis-ci.com/Damseh/VascGraph
+        
+        .. image:: https://readthedocs.org/projects/VascGraph/badge/?version=latest
+                :target: https://VascGraph.readthedocs.io/en/latest/?badge=latest
+                :alt: Documentation Status
+        
+        
+        
+        
+        Python Boilerplate contains all the boilerplate you need to create a Python package.
+        
+        
+        * Free software: MIT license
+        * Documentation: https://VascGraph.readthedocs.io.
+        
+        
+        Features
+        --------
+        
+        * TODO
+        
+        Credits
+        -------
+        
+        This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
+        
+        .. _Cookiecutter: https://github.com/audreyr/cookiecutter
+        .. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
+        
+        
+        =======
+        History
+        =======
+        
+        0.1.0 (2020-02-17)
+        ------------------
+        
+        * First release on PyPI.
+        
+Keywords: VascGraph
+Platform: UNKNOWN
+Classifier: Development Status :: 2 - Pre-Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Requires-Python: >=3.5
