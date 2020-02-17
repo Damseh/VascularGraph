@@ -20,9 +20,7 @@ Papers
   title={Laplacian Flow Dynamics on Geometric Graphs for Anatomical Modeling of Cerebrovascular Networks},
   author={Damseh, Rafat and Delafontaine-Martel, Patrick and Pouliot, Philippe and Cheriet, Farida and Lesage, Frederic},
   journal={arXiv preprint arXiv:1912.10003},
-  year={2019}
-}
-
+  year={2019}}
 
 @article{damseh2018automatic,
   title={Automatic Graph-Based Modeling of Brain Microvessels Captured With Two-Photon Microscopy},
@@ -32,17 +30,16 @@ Papers
   number={6},
   pages={2551--2562},
   year={2018},
-  publisher={IEEE}
-}
-
-
+  publisher={IEEE}}
 
 
 To install
 ----------
 
 conda create -n test python=3.7 spyder matplotlib scipy networkx=2.2 mayavi
+
 source activate test
+
 python setup.py install
 
 To test
@@ -54,11 +51,6 @@ python -i demo.py
 * Free software: MIT license
 * Documentation: https://VascGraph.readthedocs.io.
 
-
-Features
---------
-
-* TODO
 
 Credits
 -------
