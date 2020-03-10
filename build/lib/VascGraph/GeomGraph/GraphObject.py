@@ -6,31 +6,37 @@ Created on Mon Mar 11 11:38:36 2019
 @author: rdamseh
 """
 import networkx as nx 
+
+
 class GraphObject:
     
     def __init__(self, Graph=None):
         
-        self.Graph=Graph       
-            
+        '''
+        Graph can be directed or undirected networkx graph 
+        '''
+        if Graph is None:
+            pass
+        else:
+            if nx.is_directed(Graph):
+                print('--Initialized graph is directed!')
+            else:
+                print('--Initialized graph is undirected!')
+                
+            self.Graph=Graph
+        
     def InitGraph(self):
         
         '''
         Obtain a gaph containing only bifurcation nodes
         '''
         if self.Graph is None:
-            
             print('Run SetGraph!')
             return
         else:
             pass
         
-        # remove self edges
-        e=list(nx.selfloop_edges(self.Graph))
-        if len(e)>0:
-            self.Graph.remove_edges_from(e)
-         
-        # junctions
-        self.JunctionNodes=list(self.GetJuntionNodes())  
+        self.JunctionNodes=list(self.Graph.GetJuntionNodes())  
         
         # assign  weights
         for v1, v2 in self.Graph.GetEdges():
@@ -38,12 +44,10 @@ class GraphObject:
                 self.Graph[v1][v2]['weight']=1
             else:
                 self.Graph[v1][v2]['weight']=0       
-                
+        
     def GetJuntionNodes(self):
                     
-        nodes=[node for node in self.Graph.GetNodes() if 
-           len(self.Graph.GetNeighbors(node))!=2]
-    
+        nodes=self.Graph.GetJuntionNodes()
         return nodes
 
     def GetNotJuntionNodes(self):
@@ -58,12 +62,7 @@ class GraphObject:
         
     def UpdateReducedGraph(self):
         
-        if hasattr(self, 'JunctionNodes'):
-            pass
-        else:
-            self.InitGraph()
-            
-        self.ReducedGraph=self.Graph.copy()
+        self.ReducedGraph=self.Graph.copy().to_undirected()
 
         cont=1
         while cont!=0:
@@ -78,6 +77,7 @@ class GraphObject:
                         self.ReducedGraph.add_edge(k[0], k[1], weight=0)
                     cont=1
                         
+             
     def UpdateBranches(self):
         self.Branches=self.ReducedGraph.GetEdges()
         
@@ -119,3 +119,4 @@ class GraphObject:
         try:
             return self.DictBranches
         except: return        
+

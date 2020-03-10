@@ -259,7 +259,6 @@ def FullyConnectedGraph(G):
 
 def ConnectedComponents(G, max_n=0):
     
-    
     # connected components
     graphs=list(nx.connected_component_subgraphs(G))
 
@@ -620,76 +619,120 @@ def LabelGraphBranchesManySources(graph, sources=[]):
 
 
 
-def TransferAttributes (DiG, G):
+def TransferAttributes (DiG, G, warning=True):
      
-       attr=['pos', 'r', 'type', 'branch', 'source', 'sink', 'root']
+    attr=['pos', 'r', 'type', 'branch', 'source', 'sink', 'root']
+    
+    for att in attr:
+        for i in DiG.GetNodes():
+            try:
+                DiG.node[i][att]=G.node[i][att]
+            except: pass
+    
+    edg=G.GetEdges()[0]
+    attr_edg=G[edg[0]][edg[1]].keys()
+    
+    # attr that are not assigned to all edges
+    rem=['outflow', 'inflow']
+    for i in rem:
+        try:
+            attr_edg.remove(i)
+        except:
+            pass
+
+    for att in attr_edg:
+        try:
+            for i in DiG.GetEdges():
+                DiG[i[0]][i[1]][att]=G[i[0]][i[1]][att]
+        except: 
+            if warning:
+                print('Warning: attribute \''+ att +'\' is not assigned to all graph edges!')
        
-       for att in attr:
-           for i in DiG.GetNodes():
-               try:
-                   DiG.node[i][att]=G.node[i][att]
-               except: pass
        
-       edg=G.GetEdges()[0]
-       attr_edg=G[edg[0]][edg[1]].keys()
-       
-       # attr that are not assigned to all edges
-       rem=['outflow', 'inflow']
-       for i in rem:
-           try:
-               attr_edg.remove(i)
-           except:
-               pass
-       
-       for att in attr_edg:
-           try:
-               for i in DiG.GetEdges():
-                   DiG[i[0]][i[1]][att]=G[i[0]][i[1]][att]
-           except: print('Warning: attribute \''+ att +'\' is not assigned to all graph edges!')
-           
-      
-       ############## if attributes are set for some but not all of graph compartments 
-       # ------------ edges ---------#
-           
-       for i in DiG.GetEdges():
-           try:
-               DiG[i[0]][i[1]]['inflow']=G[i[0]][i[1]]['inflow'] 
-           except: pass
-       
-           try:
-               DiG[i[0]][i[1]]['outflow']=G[i[0]][i[1]]['outflow'] 
-           except: pass
-       
-           try:
-               DiG[i[0]][i[1]]['pressure']=G[i[0]][i[1]]['pressure']  
-           except: pass
+    ############## if attributes are set for some but not all of graph compartments 
+    # ------------ edges ---------#
+        
+    for i in DiG.GetEdges():
+        try:
+            DiG[i[0]][i[1]]['inflow']=G[i[0]][i[1]]['inflow'] 
+        except: pass
+    
+        try:
+            DiG[i[0]][i[1]]['outflow']=G[i[0]][i[1]]['outflow'] 
+        except: pass
+    
+        try:
+            DiG[i[0]][i[1]]['pressure']=G[i[0]][i[1]]['pressure']  
+        except: pass
+    
+    # --------- nodes ------------#
+    for i in DiG.GetNodes():
+        try:
+            DiG.node[i]['inflow']=G.node[i]['inflow'] 
+        except: pass
+    
+        try:
+            DiG.node[i]['outflow']=G.node[i]['outflow'] 
+        except: pass
+    
+        try:
+            DiG.node[i]['sink']=G.node[i]['sink'] 
+        except: pass
+    
+        try:
+            DiG.node[i]['source']=G.node[i]['source'] 
+        except: pass        
+    
+    
 
-       # --------- nodes ------------#
-       for i in DiG.GetNodes():
-           try:
-               DiG.node[i]['inflow']=G.node[i]['inflow'] 
-           except: pass
-       
-           try:
-               DiG.node[i]['outflow']=G.node[i]['outflow'] 
-           except: pass
-       
-           try:
-               DiG.node[i]['sink']=G.node[i]['sink'] 
-           except: pass
-       
-           try:
-               DiG.node[i]['source']=G.node[i]['source'] 
-           except: pass        
+def TransferAttributesFaster(DiG, G, warning=True):
+     
+    attr=['pos', 'r', 'type', 'branch', 'res', 'vol', 'flow', 'pressure', 'label', 'node', 'type', 'area']
+    
+    # nodes and edges
+    for att in attr:
+        try:
+            for i in DiG.GetNodes():
+                DiG.node[i][att]=G.node[i][att]
+        except: pass
+        
+        try:
+            for i in DiG.GetEdges():
+                DiG[i[0]][i[1]][att]=G[i[0]][i[1]][att]
+        except: pass    
+    
+    
+    # source  sink nodes
+    nodes1,nodes2=G.GetSourcesSinks()
+    nodes=nodes1
+    nodes.extend(nodes2)
+    
 
+    attr=['source', 'sink', 'inflow', 'outflow', 'pressure']
+    
+    for i in nodes:
+        for att in attr:
+            try:
+                DiG.node[i][att]=G.node[i][att]
+            except: pass
 
+    attr=['source', 'sink', 'root', 'pressure', 'inflow', 'outflow']
+        
+    for i in nodes:
+        for att in attr:
+            try:
+                nn=DiG.GetNeighbors(i)
+                if len(nn)>0:
+                    for n in nn:
+                        DiG[i][n][att]=G[i][n][att]
+            except: pass
 
-
-
-
-
-
-
+            try:
+                nn=DiG.GetPredecessors(i)
+                if len(nn)>0:
+                    for n in nn:
+                        DiG[n][i][att]=G[n][i][att]
+            except: pass
 
 
 
