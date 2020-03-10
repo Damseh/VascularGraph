@@ -217,7 +217,7 @@ class GenerateDiGraph(GraphObject):
             Sources=[]
             for i in self.DiGraph.GetNodes():
                 try:
-                    if self.DiGraph.node[i]['source']=='1':
+                    if self.DiGraph.node[i]['source']=='1' or self.DiGraph.node[i]['source']==1:
                         Sources.append(i)
                 except: pass
             
@@ -334,7 +334,7 @@ class GenerateDiGraph(GraphObject):
                 
             for e in g.GetEdges():
                 
-                g[e[0]][e[1]]['branch']= g.node[e[0]]['branch']
+                g[e[0]][e[1]]['branch']= g.node[e[1]]['branch']
                 
             return g
         

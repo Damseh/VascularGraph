@@ -163,6 +163,8 @@ class MainDialogue(HasTraits):
                                                    path=path),*icons_digraph)
     
     Propagate_vessel_type=Button(label='Propagate vessel type')
+    Reset_vessel_type=Button(label='Reset vessel type')
+
     Propagate_cutoff=Int()
     Vessel_type=Enum('Artery','Vein', 'Capillary')
 
@@ -571,21 +573,30 @@ class MainDialogue(HasTraits):
         
     def _Generate_and_label_directed_graph_fired(self):
         
-        if self.Graph.is_directed():
-            self.Graph=self.Graph.to_undirected()
-            self.DiGraph_check='false'
+        # if self.Graph.is_directed():
+        #     self.Graph=self.Graph.to_undirected()
+        #     self.DiGraph_check='false'
             
-        self.DiGraphObject.SetGraph(self.Graph)
+        # self.DiGraphObject.SetGraph(self.Graph)
         
-        if len(self.Sources)==0:
-            print('Sources need to be set!')
-        else:
-            self.DiGraphObject.UpdateDiGraphFromGraph2(Sources=self.Sources, Sinks=self.Sinks)
-            self.DiGraph_check='true'
+        # if len(self.Sources)==0:
+        #     print('Sources need to be set!')
+        # else:
+        #     self.DiGraphObject.UpdateDiGraphFromGraph2(Sources=self.Sources, Sinks=self.Sinks)
+        #     self.DiGraph_check='true'
             
-        self.Graph=fixG(self.DiGraphObject.GetDiGraph())
+            
+        if self.Graph.is_directed():
+             self.Graph=self.Graph.to_undirected()
+             self.DiGraph_check='false'
+             
+             
+        self.Graph.RefineExtremities()
+        self.Graph = self.Graph.ToDirected()        
+        self.Graph = fixG(self.Graph)
         self.__UpdateSourcesSinks()
         self.__UpdateGraphPlot()
+        self.DiGraph_check='true'
         
         
     def _Recall_undirected_graph_fired(self):
@@ -634,6 +645,12 @@ class MainDialogue(HasTraits):
             self.__UpdateGraphPlot()
 
 
+
+    def _Reset_vessel_type_fired(self):
+        
+        for i in self.Graph.GetNodes():
+            self.Graph.node[i]['type']=self.TypeValue['Capillary']
+
     def _Propagate_vessel_type_fired(self):
         
         
@@ -643,23 +660,17 @@ class MainDialogue(HasTraits):
             print('Directed graph is needed!')
             return
         
-        try: 
-            self.DiGraphObject
-        except: print('DiGraphObject is not created!')
-
-        
         if self.Vessel_type=='Artery':
-            self.DiGraphObject.PropagateTypes2(cutoff=self.Propagate_cutoff,
+            self.Graph.PropagateTypes(cutoff=self.Propagate_cutoff,
                                                value=self.TypeValue[self.Vessel_type],
                                                exclude_values=[self.TypeValue['Vein']], other_value=self.TypeValue['Capillary'])   
             
         if self.Vessel_type=='Vein':
-            self.DiGraphObject.PropagateTypes2(cutoff=self.Propagate_cutoff, 
+            self.Graph.PropagateTypes(cutoff=self.Propagate_cutoff, 
                                                value=self.TypeValue[self.Vessel_type],
                                                exclude_values=[self.TypeValue['Artery']], other_value=self.TypeValue['Capillary'],
                                                backward=True) 
                     
-        self.Graph=fixG(self.DiGraphObject.GetDiGraph())
         self.__UpdateGraphPlot()
 
 
@@ -832,26 +843,25 @@ class MainDialogue(HasTraits):
         self.NNodes=self.Graph.number_of_nodes()
         self.__SetGraphAttr()
         self.DiGraphObject.SetGraph(self.Graph)
-        
-        self.Sources, self.Sinks = self.Graph.GetSourcesSinks()
+        self. __UpdateSourcesSinks()
         
         
     def __UpdateSourcesSinks(self):
         
-        self.Sources=[]
-        self.Sinks=[]
+        self.Sources, self.Sinks = self.Graph.GetSourcesSinks()
         
-        for i in self.Graph.GetNodes():
-            try:
-                if self.Graph.node[i]['source']==1:
-                    self.Sources.append(i)
-            except: pass
+        # self.Sources, self.Sinks = [],[]
+        # for i in self.Graph.GetNodes():
+        #     try:
+        #         if self.Graph.node[i]['source']==1:
+        #             self.Sources.append(i)
+        #     except: pass
                 
-        for i in self.Graph.GetNodes():
-            try:
-                if self.Graph.node[i]['sink']==1:
-                    self.Sinks.append(i) 
-            except: pass
+        # for i in self.Graph.GetNodes():
+        #     try:
+        #         if self.Graph.node[i]['sink']==1:
+        #             self.Sinks.append(i) 
+        #     except: pass
 
 
     def __SetDiGraph(self): pass
@@ -1276,7 +1286,7 @@ class MainDialogue(HasTraits):
                                     Item('Propagate_cutoff', label='Depth'),
                                     Item('Vessel_type'),
                                     orientation='horizontal', show_border=True),
-
+                                Item('Reset_vessel_type', show_label=False),
                                 orientation='vertical', show_border=True, label='Directed graph from labeling'),
                         Group(
                             Item('Convert_to_tree_graph', show_label=False),
@@ -1290,7 +1300,7 @@ class MainDialogue(HasTraits):
 
 
 #------------------------------------------------------------
-#       Labeling GROUP
+#       Flow GROUP
 #------------------------------------------------------------
                      
     flow_group =  Group(
@@ -1328,8 +1338,6 @@ class MainDialogue(HasTraits):
                                 
                         label='Blood flow', orientation='vertical', layout='normal',show_border = True)
                          
-
-
 
 #------------------------------------------------------------
 #    #########    V I E W    #########

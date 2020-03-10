@@ -93,9 +93,13 @@ class AnnotateDiGraph(GenerateDiGraph):
             input:
                 t: type to be assigned to graph nodes
             '''
-            if self.DiGraph is None:
+            try:
+                dumb = self.DiGraph 
+            except:
                 print('Run UpdateDiGraph!')
                 return
+      
+            exclude_values.extend([value])
             
             try:
                 self.DiGraph.node[self.DiGraph.GetNodes()[0]]['branch']
@@ -106,21 +110,22 @@ class AnnotateDiGraph(GenerateDiGraph):
             if backward:
                 max_b=np.max([self.DiGraph.node[i]['branch'] for i in self.DiGraph.GetNodes()])
                 branches=np.arange(max_b, max_b-cutoff, -1)
+                print('Add types for branch levels:', branches)
                 
             else:
                 min_b=np.min([self.DiGraph.node[i]['branch'] for i in self.DiGraph.GetNodes()])
                 branches=np.arange(min_b, min_b+cutoff, 1)
+                print('Add types for branch levels:', branches)
             
             for b in branches:
+                
                 for i in self.DiGraph.GetNodes():
                     
                     if self.DiGraph.node[i]['branch']==b:
                         self.DiGraph.node[i]['type']=value
                         
-                    elif self.DiGraph.node[i]['type'] not in exclude_values:
-                        self.DiGraph.node[i]['type']=other_value
-            
-                    else: pass
+                    if self.DiGraph.node[i]['type'] not in exclude_values:
+                        self.DiGraph.node[i]['type']=other_value                
 
 
 

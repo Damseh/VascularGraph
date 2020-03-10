@@ -96,10 +96,16 @@ class ReadPajek():
                                 xyz.append(float(value[0]))
                             except: pass                  
                     
-                    
             G.node[n]['pos']=np.array(xyz)
             
             # add label
+            
+            try:
+                b=node['label'].encode()
+                G.node[n]['label']=int(b)
+            except:
+                pass              
+            
             try:
                 yORn=node['node'].encode()
                 if yORn=='False':
@@ -153,6 +159,7 @@ class ReadPajek():
             except:
                 pass
             
+            
             # add inflow
             try:
                 b=node['inflow'].encode()
@@ -203,6 +210,14 @@ class ReadPajek():
             except:
                 pass    
 
+           # add pressure
+            try:
+                b=node['subpressure'].encode()
+                G.node[n]['subpressure']=float(b)
+            except:
+                pass  
+
+
             # add velocity
             try:
                 b=node['velocity'].encode()
@@ -222,8 +237,8 @@ class ReadPajek():
                 b=node['po2'].encode()
                 G.node[n]['po2']=float(b)
             except:
-                pass              
-                                        
+                pass   
+                                                  
         #build Topology
         raw_edges=list(G_init.edges()) 
         edges=[(int(i[0]),int(i[1])) for i in raw_edges]
@@ -237,9 +252,11 @@ class ReadPajek():
                 G[j[0]][j[1]]['flow']=G_init[i[0]][i[1]][0]['flow'] 
             except: pass
             try:
-                G[j[0]][j[1]]['pressure']=G_init[i[0]][i[1]][0]['res'] 
+                G[j[0]][j[1]]['pressure']=G_init[i[0]][i[1]][0]['pressure'] 
             except: pass
-        
+            try:
+                G[j[0]][j[1]]['subpressure']=G_init[i[0]][i[1]][0]['subpressure'] 
+            except: pass        
             try:
                 G[j[0]][j[1]]['inflow']=G_init[i[0]][i[1]][0]['inflow'] 
             except: pass
@@ -251,7 +268,6 @@ class ReadPajek():
             try:
                 G[j[0]][j[1]]['branch']=G_init[i[0]][i[1]][0]['branch'] 
             except: pass
-        
             try:
                 G[j[0]][j[1]]['velocity']=G_init[i[0]][i[1]][0]['velocity'] 
             except: pass        

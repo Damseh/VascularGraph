@@ -15,16 +15,18 @@ class WritePajek:
         self.path=path
         self.name=name
 
-        graph=self.__stringizer(graph.copy())
+        graph=self.__stringizer(graph)
         
         nx.write_pajek(graph, self.path+self.name)
         
     def __stringizer(self, g):
         
+        
+        # --------- nodes ----------#
         test_id=g.GetNodes()[0]
         attr_to_stringize=['pos', 'r', 'd', 'type', 'branch', 'flow', 'pressure', 
-                           'velocity', 'po2', 'so2', 'velocity', 
-                           'source', 'sink', 'inflow', 'outflow', 'vol', 'area']
+                           'velocity', 'po2', 'so2', 'velocity', 'label',
+                           'source', 'sink', 'inflow', 'outflow', 'vol', 'area', 'subpressure']
         
         for i in attr_to_stringize:
             try:
@@ -34,21 +36,24 @@ class WritePajek:
                 pass
 
         for j in attr_to_stringize:
-            
             for i in g.GetNodes():
                 
                 try:
                     g.node[i][j]=str(g.node[i][j])
                 except:
                     pass
-        return g
     
-        for e in g.GetEdges():
-            for j in attr_to_stringize:
-                try:
-                    g[e[0]][e[1]]=str(g[e[0]][e[1]])
+        # --------edges --------#
+     
+        for j in attr_to_stringize:
+            for e in g.GetEdges():
+
+                try:   
+                    g[e[0]][e[1]][j]=str(g[e[0]][e[1]][j])
                 except:
                     pass
+                
+        # return g         
         return g    
 
                 
