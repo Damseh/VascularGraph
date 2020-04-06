@@ -12,3 +12,4 @@ from VascGraph.Skeletonize.RefineGraph import RefineGraph
 from VascGraph.Skeletonize.RefineGraphRadius import RefineGraphRadius
 import VascGraph.Skeletonize.BinaryModels
 from VascGraph.Skeletonize.sknw import Skel3D
+from VascGraph.Skeletonize.Skeleton import Skeleton

@@ -26,6 +26,10 @@ from mayavi import mlab
 
 if __name__=='__main__':
     
+    '''
+    This demo explains to perform graphing using the each of the modules: GenerateGraph,
+    ContractGraph, RefineGraph
+    '''
 
     # ------------------------------------------------------------------------#
     #parameters

@@ -9,7 +9,7 @@ Created on Wed Feb  6 12:36:37 2019
 import numpy as np
 import scipy.ndimage as image
 import networkx as nx
-
+from scipy import sparse
 
 def AssignToClusters(pos, resolution=1.0):
     '''
@@ -88,7 +88,7 @@ def CheckNode(a, b, thr=0):
     
     p1=b[0]
     p2=b[1:]
-    
+
     ap1 = p1 - a
     ap2 = p2 - a
     
@@ -159,7 +159,7 @@ def numpy_fill(data, lens, s=False):
 
     # Setup output array and put elements from data into masked positions
     if s: 
-        out = np.zeros((mask.shape[0],mask.shape[1], s), dtype=data.dtype)
+        out = np.zeros((mask.shape[0], mask.shape[1], s), dtype=data.dtype)
         out[mask, :] = np.concatenate(data)
 
     else:
@@ -168,6 +168,42 @@ def numpy_fill(data, lens, s=False):
 
     return out.astype(float), mask   
 
+
+def numpy_fill_sparse(data, lens, s=False):
+    '''
+    Pad an array with different row sizes
+    Input:
+        data: object array
+        lens: length of each row of data
+        s=length of each element in the row
+    '''
+    lens=np.array(lens)
+
+    # Mask of valid places in each row
+    mask = sparse.lil_matrix(np.arange(lens.max()) < lens[:, None])
+
+    # Setup output array and put elements from data into masked positions
+    if s==3:    
+        
+        outx = sparse.lil_matrix((mask.shape[0], mask.shape[1]))
+        outy = sparse.lil_matrix((mask.shape[0], mask.shape[1]))
+        outz = sparse.lil_matrix((mask.shape[0], mask.shape[1]))
+        
+        datax=np.array([[k1[0] for k1 in k2] for k2 in data])
+        datay=np.array([[k1[1] for k1 in k2] for k2 in data])
+        dataz=np.array([[k1[2] for k1 in k2] for k2 in data])
+
+        outx[mask] = np.concatenate(datax)
+        outy[mask] = np.concatenate(datay)
+        outz[mask] = np.concatenate(dataz)
+        
+        return outx, outy, outz, mask  
+    
+    else:
+        data=np.array([[k1 for k1 in k2] for k2 in data])
+        out = sparse.lil_matrix((mask.shape[0], mask.shape[1]))
+        out[mask] = np.concatenate(data)
+        return out, mask  
 
 def get_difference(a, b):
      

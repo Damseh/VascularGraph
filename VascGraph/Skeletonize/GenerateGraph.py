@@ -16,12 +16,16 @@ from scipy.ndimage import filters as filt
 
 class GenerateGraph:
     
-    def __init__(self, Label):
+    def __init__(self, Label, DisMap=None, label_ext=False):
         
         self.Label=Label
+        self.label_ext=label_ext
         self.Shape=np.shape(self.Label) # size of image
         self.Length=self.Shape[0]*self.Shape[1]*self.Shape[2] # number of voxels
         self.__ComputeArea()
+        self.DistMap=DisMap
+    
+    
     # private 
 
     def __ComputeArea(self):
@@ -45,9 +49,9 @@ class GenerateGraph:
 #        DistMap=np.maximum(DistMap_, DistZY)
 #    
 #        DistMap=filt.maximum_filter(DistMap, size=(3,3,3))
-        
-        DistMap=image.morphology.distance_transform_edt(self.Label)
-        self.DistMap=DistMap
+        if self.DistMap is None:
+            DistMap=image.morphology.distance_transform_edt(self.Label)
+            self.DistMap=DistMap
     
     def __AssignDistMapToGraph(self):
         
@@ -232,6 +236,32 @@ class GenerateGraph:
             self.Graph.remove_nodes_from(NodesToExclude)
             NNodesToExclude=len(NodesToExclude)
     
+        # label extremity nodes at imageborders
+        if self.label_ext:
+            
+            maxx, maxy, maxz = Label.shape
+            maxx-=1 
+            maxy-=1
+            maxz-=1
+            
+            pos=self.Graph.GetNodesPos()
+            ext=[]
+            for n, p in zip(self.Graph.GetNodes(), self.Graph.GetNodesPos()):
+                
+                if p[0]==0 or p[0]==maxx:
+                    self.Graph.node[n]['ext']=1
+                    
+                if p[1]==0 or p[1]==maxy:
+                    self.Graph.node[n]['ext']=1  
+                    
+                if p[2]==0 or p[2]==maxz:
+                    self.Graph.node[n]['ext']=1 
+
+                try:
+                    dumb=self.Graph.node[n]['ext']
+                except:
+                    self.Graph.node[n]['ext']=0 
+        
         if self.Sampling is not None:
             for i in self.Graph.GetNodes():
                 self.Graph.node[i]['pos']=self.Graph.node[i]['pos']*self.Sampling

@@ -12,7 +12,7 @@ VascGraph
         :target: https://VascGraph.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
-A Python package to generate graph-based anatomical models of vascular structures. 
+A Python package to generate graph-based anatomical models of vascular structures.
 
 Papers
 ------
@@ -36,16 +36,16 @@ Papers
 To install
 ----------
 
-conda create -n test python=3.7 spyder matplotlib scipy networkx=2.2 mayavi
+<conda create -n test python=3.7 spyder matplotlib scipy networkx=2.2 mayavi>
 
-source activate test
+<source activate test>
 
-python setup.py install
+<python setup.py install>
 
 To test
 -------
 
-python -i demo.py
+<python -i demo.py>
 
 
 * Free software: MIT license
