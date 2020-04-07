@@ -36,9 +36,13 @@ Papers
 To install
 ----------
 
-``conda create -n test python=3.7 spyder matplotlib scipy networkx=2.2 mayavi``
+``git clone https://github.com/Damseh/VascularGraph.git``
 
-``source activate test``
+``cd VascularGraph``
+
+``conda create -n ENV_NAME python=3.7 spyder matplotlib scipy networkx=2.2 mayavi``
+
+``source activate ENV_NAME``
 
 ``python setup.py install``
 
@@ -46,7 +50,6 @@ To test
 -------
 
 ``python -i demo_skeleton.py``
-
 
 * Free software: MIT license
 * Documentation: https://VascGraph.readthedocs.io.
