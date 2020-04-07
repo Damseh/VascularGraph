@@ -36,16 +36,16 @@ Papers
 To install
 ----------
 
-<conda create -n test python=3.7 spyder matplotlib scipy networkx=2.2 mayavi>
+``conda create -n test python=3.7 spyder matplotlib scipy networkx=2.2 mayavi``
 
-<source activate test>
+``source activate test``
 
-<python setup.py install>
+``python setup.py install``
 
 To test
 -------
 
-<python -i demo.py>
+``python -i demo_skeleton.py``
 
 
 * Free software: MIT license
