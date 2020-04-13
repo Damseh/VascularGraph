@@ -8,14 +8,17 @@ Created on Tue Feb  5 11:03:31 2019
 from VascGraph.Tools.CalcTools import *
 from VascGraph.Skeletonize import BaseGraph
 import scipy as sp
+from scipy import sparse
 
 class ContractGraph(BaseGraph):
        
     
-    def __init__(self, Graph=None):
-        
+    def __init__(self, Graph=None, freeze_ext=False, use_sparse=False, check_pos=False):
+        BaseGraph.__init__(self, label_ext=freeze_ext)
         if Graph is not None:
-            self.Graph=Graph 
+            self.Graph=Graph             
+        self.freeze_ext=freeze_ext
+        self.use_sparse=use_sparse
 
     # private    
     def __CheckGraph(self):
@@ -29,17 +32,28 @@ class ContractGraph(BaseGraph):
         NodesToRemove=[i for i in self.Graph.GetNodes() if len(self.Graph.GetNeighbors(i))==0]
         self.Graph.remove_nodes_from(NodesToRemove)
 
+        ##############
         # obtain info
-        self.Nodes=np.array(self.Graph.GetNodes())
+        ##############
+        
+        # if to exlude extremity nodes from neighbors (at the border)
+        if self.freeze_ext:
+            self.Ext_Nodes=np.array([k for k in self.Graph.GetNodes() if self.Graph.node[k]['ext']==1])
+            gtemp=self.Graph.copy()
+            gtemp.remove_nodes_from(self.Ext_Nodes)
+            NodesToRemove=[i for i in gtemp.GetNodes() if len(gtemp.GetNeighbors(i))==0]
+            gtemp.remove_nodes_from(NodesToRemove)              
+            self.Nodes=np.array(gtemp.GetNodes())
+            self.Neighbors=[gtemp.GetNeighbors(i) for i in self.Nodes]
+        else:
+            self.Nodes=np.array(self.Graph.GetNodes())
+            self.Neighbors=[self.Graph.GetNeighbors(i) for i in self.Nodes]
+        
         self.NNodes=len(self.Nodes)
         self.NodesPos=np.array([self.Graph.node[i]['pos'] for i in self.Nodes])
-
-        self.Neighbors=[self.Graph.GetNeighbors(i) for i in self.Nodes]
         self.NeighborsPos=[np.array([self.Graph.node[i]['pos'] for i in j]) for j in self.Neighbors]
-        
         self.MedialValues=np.array([self.Graph.node[i]['r'] for i in self.Nodes])
         self.Degree=[len(i) for i in self.Neighbors]
-
 
         # check if a nodes is skeletal
         if self.DegreeThreshold is not None:
@@ -47,7 +61,7 @@ class ContractGraph(BaseGraph):
             CheckDegree=IsSklNodes(self.NodesPos, self.NeighborsPos, self.DegreeThreshold) # true if skeleton
             self.SkeletalMask=np.logical_and(CheckNeighbors, CheckDegree) # true if skeleton, false otherwise
         else:
-            self.SkeletalMask=np.array([False]*self.Graph.number_of_nodes())
+            self.SkeletalMask=np.array([False]*len(self.Nodes))
             
         #nodes_to_process & skl nodes
         self.NodesToProcess=self.Nodes[self.SkeletalMask==False]
@@ -73,6 +87,27 @@ class ContractGraph(BaseGraph):
             Check=Area>self.AreaThreshold
             return Check, Area
 
+    def __CheckIterExt(self):
+            '''
+            check if to continue iteration or not, based on the area of polygns
+            '''            
+            #picking only moving nodes
+            GraphExt=self.Graph.copy()
+            rem=[]
+            dumb=[rem.append(k) for k in GraphExt.GetNodes() if GraphExt.node[k]['ext']==0]
+            GraphExt.remove_nodes_from(rem)
+            
+            #find polygons
+            cyc=nx.cycle_basis(GraphExt)
+            Area=0
+            for l in range(10):
+                if l>2:
+                    Polygons=(k for k in cyc if len(k)==l)  
+                    Pos=np.array([[GraphExt.node[j]['pos'] for j in i]  for i in Polygons])
+                    Area+=np.sum(CycleAreaAll(Pos))
+            Check=Area>self.AreaThresholdExt
+            return Check, Area
+
 
     def __ApplyContraction(self, save_info=False, update_positions=True):
     
@@ -84,7 +119,8 @@ class ContractGraph(BaseGraph):
         # used to fill 'A' matrix
         NeighborsMat=np.array(self.Neighbors)
         NeighborsMat, MaskMat=numpy_fill(NeighborsMat, self.Degree) 
-           
+        print(NeighborsMat.shape)
+        
         def GetDistMat(Pos, NbrsPos, Degree):
             
             NbrsPos=np.array(NbrsPos)
@@ -95,6 +131,30 @@ class ContractGraph(BaseGraph):
             
             return Dist0/Dist1[:,None]          
             
+        def GetDistMatSparse(Pos, NbrsPos, Degree):
+            
+            def sub(a0, a):
+                for k in range(a.shape[1]):
+                    a[:, k] = a0 - a[:, k]
+                return a 
+            
+            NbrsPos=np.array(NbrsPos)
+            NbrsPosx, NbrsPosy, NbrsPosz,  MaskMat = numpy_fill_sparse(NbrsPos, Degree, 3) # padded numpy array  
+            
+            dx=sub(Pos[:, 0, None], NbrsPosx).multiply(MaskMat)
+            dy=sub(Pos[:, 1, None], NbrsPosy).multiply(MaskMat)
+            dz=sub(Pos[:, 2, None], NbrsPosz).multiply(MaskMat)
+            
+            Dist0=(dx.power(2)+dy.power(2)+dz.power(2)).power(0.5)
+            Dist0=Dist0.multiply(MaskMat) #*nodes_degree
+            
+            Dist1=Dist0.sum(axis=1)
+            Dist1[Dist1==0]=1
+            
+            ret=Dist0.multiply(1/Dist1)
+            
+            return ret.tolil()         
+        
         def GetMedMat(NeighborsMat, MaskMat, MedialValues, NodesIndices):
                    
             NeighborsIndices=[NodesIndices[i] for i in NeighborsMat[MaskMat].astype(int)]      
@@ -148,7 +208,6 @@ class ContractGraph(BaseGraph):
             B=np.vstack([np.zeros_like(Pos), np.zeros_like(Pos), 
                          Pos*np.array([SpeedValues,SpeedValues,SpeedValues]).T]) # b matrix
             return B
-            
     
         def Solve(A, B):
             px = sp.sparse.linalg.lsqr(A, B[:,0], atol=1e-06, btol=1e-06)[0] 
@@ -159,7 +218,11 @@ class ContractGraph(BaseGraph):
             return NewPos
              
         # laplacian operators / obtain weights  
-        DistMat=GetDistMat(self.NodesPos, self.NeighborsPos, self.Degree)      
+        if self.use_sparse:
+            DistMat=GetDistMatSparse(self.NodesPos, self.NeighborsPos, self.Degree)  
+        else:
+            DistMat=GetDistMat(self.NodesPos, self.NeighborsPos, self.Degree) 
+
         MedMat=GetMedMat(NeighborsMat, MaskMat, self.MedialValues, NodesIndices)
                
         if save_info:
@@ -218,7 +281,57 @@ class ContractGraph(BaseGraph):
   
             self.Iteration+=1
        
+    def __ContractGraphExt(self):            
+        
+        self.freeze_ext=True
+        
+        # turn freezing nodes to moving nodes
+        for k in self.raph.GetNodes():
+            if self.Graph.node[k]['ext']==0:
+                self.Graph.node[k]['ext']=1
+            else:
+                self.Graph.node[k]['ext']=0 
+        
+        self.Iteration = 1
+        self.AreaThresholdExt=0
+        Check=True 
+        
+        while Check:
+            # setup area threshold
+            if self.Iteration==1:
+                Check, Area=self.__CheckIterExt()
+                self.AreaThresholdExt=Area*self.StopParamExt
+                print('Area: '+str(Area))
+                
+            # examin skeletal nodes and get info
+            self.__CheckGraph() 
+            
+            # apply contraction
+            self.__ApplyContraction()   
+            
+            # cluster and update topology
+            self._BaseGraph__UpdateTopology(resolution=self.ClusteringResolution)
 
+            if self.Iteration>=self.NFreeIteration:
+                Check, Area=self.__CheckIterExt()
+                self.Graph.Area=Area
+                if not Check:
+                    print('Converged! Cycles Area is less than '+str(self.AreaThreshold))
+                else:
+                    print('Area: '+str(Area))
+  
+            self.Iteration+=1       
+        
+        # turn back moving nodes into freezing nodes
+        for k in self.raph.GetNodes():
+            if self.Graph.node[k]['ext']==0:
+                self.Graph.node[k]['ext']=1
+            else:
+                self.Graph.node[k]['ext']=0         
+       
+        self.freeze_ext=False
+        
+       
     def __ContractGraphOneStep(self, update_positions=False):            
         
         try:
@@ -255,8 +368,26 @@ class ContractGraph(BaseGraph):
         self.DegreeThreshold=DegreeThreshold
         self.NFreeIteration=NFreeIteration
         self.ClusteringResolution=ClusteringResolution
-        self.StopParam=StopParam       
+        self.StopParam=StopParam   
         self.__ContractGraph()
+  
+    def UpdateExt(self, DistParam=1,
+                     MedParam=1,
+                     SpeedParam=.1, 
+                     DegreeThreshold=None,
+                     NFreeIteration=1,
+                     ClusteringResolution=1.0,
+                     StopParamExt=.01):
+        
+        self.DistParam=DistParam
+        self.MedParam=MedParam
+        self.SpeedParam=SpeedParam 
+        self.DegreeThreshold=DegreeThreshold
+        self.NFreeIteration=NFreeIteration
+        self.ClusteringResolution=ClusteringResolution
+        self.StopParamExt=StopParamExt       
+        self.__ContractGraphExt()  
+    
   
 
     def UpdateOneStep(self, DistParam=1,

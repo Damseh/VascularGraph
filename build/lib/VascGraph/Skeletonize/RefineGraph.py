@@ -11,7 +11,7 @@ from VascGraph.Skeletonize import BaseGraph
 class RefineGraph(BaseGraph):
     
     def __init__(self, Graph=None):
-        
+        BaseGraph.__init__(self)
         if Graph is not None:    
             self.Graph=Graph
    
@@ -91,7 +91,7 @@ class RefineGraph(BaseGraph):
         self.__RefineGraph()
         
     def GetOutput(self):
-        self.Graph=fixG(self.Graph, copy=True)
+        self.Graph
         return self.Graph    
 
 if __name__=='__main__':

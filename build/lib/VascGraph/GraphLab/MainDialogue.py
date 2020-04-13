@@ -974,7 +974,8 @@ class MainDialogue(HasTraits):
                       PolyParam=int(self.PolyNum))
         self.Graph=refine.GetOutput()        
         #self.Graph=prunG(self.Graph)
-        
+        self.Graph=fixG(self.Graph)
+
         print('Number of iterations: '+str(contract.Iteration))
         print('Time to generate the model: '+ str(time()-t0))
         

@@ -11,11 +11,10 @@ from VascGraph.Tools.CalcTools import *
 
 class BaseGraph:
     
-    def __init__(self, Graph):
+    def __init__(self, label_ext=False):
         
-        self.Graph=Graph
-        self.NodesToProcess=[]
-        
+        self.label_ext=label_ext
+
 
     def __UpdateTopology(self, resolution=1.0):
         
@@ -75,7 +74,7 @@ class BaseGraph:
             
 
         # add new nodes to graph
-        NewNodes=list(1+np.array(range(len(Centroids)))+np.max(self.Nodes))
+        NewNodes=list(1+np.array(range(len(Centroids)))+np.max(self.Graph.GetNodes()))
         self.Graph.add_nodes_from(NewNodes)
     
         # obtain and set Centroids if not found
@@ -100,7 +99,15 @@ class BaseGraph:
                 self.Graph.node[i]['r']=NewDiameters[ind]
         except:
             pass 
-    
+        
+        if self.label_ext:
+            try:
+                for ind, i in enumerate(NewNodes):
+                    self.Graph.node[i]['ext']=0
+            except:
+                pass 
+
+        
         # obtain void nodes
         ClusteredNodes=[j for i in Clusters for j in i] # unravel
         VoidNodes=list(set(self.Nodes).difference(set(ClusteredNodes)))        
