@@ -16,15 +16,8 @@ import h5py
 import scipy.ndimage as ndim
 import os
 matplotlib.use('AGG')
-from keras.layers import (Activation, Convolution3D, Dense, Dropout, Flatten,
-                          MaxPooling3D)
-from keras.models import Sequential
-from tqdm import tqdm
+
 from mayavi.sources.api import ArraySource
-from mayavi.filters.api import Stripper, Tube, WarpScalar, PolyDataNormals, Contour, UserDefined
-from mayavi.filters.set_active_attribute import SetActiveAttribute
-from mayavi.modules.api import IsoSurface, Surface, Outline, Text3D, Glyph
-from mayavi.tools.pipeline import line_source 
 from scipy.spatial import ConvexHull as fc
 import skimage.morphology as morph1
 import scipy.ndimage.morphology as morph2
@@ -35,7 +28,6 @@ import matplotlib
 import networkx as nx
 from PIL import Image
 import itertools as it
-import scipy as sp
 
 def visPredict(v):    
     indices=np.where(v>0)
@@ -777,16 +769,16 @@ def readOFF(filename):
                 vertex = [float(point) for point in vertex]
                 assert len(vertex) == 3     
                 vertices.append(vertex)
-            except ValueError,e:            
-                 print "error",e,"on line",i
+            except:
+                ValueError
  
         faces = []
         for i in range(num_faces):
             try:                
                 face = lines[K + num_vertices + i].split()
                 face = [int(index) for index in face if index !='']
-            except ValueError,e:
-                print "error",e, "on line",i, face[i]
+            except:
+                ValueError
     
             assert face[0] == len(face) - 1
             for index in face:
@@ -1473,8 +1465,8 @@ def visProG(G, radius=.15,
                                        
                 sphere.mlab_source.set(x=x,y=y,z=z)
                 
-                print point_id
-                print x,y,z
+                print(point_id)
+                print(x,y,z)
     
     picker = figure.on_mouse_pick(picker_callback)
     picker.tolerance = 0.001
@@ -1833,7 +1825,7 @@ def visMesh(m, color=(1,0,0), opacity=.5,
     
     t=[i for i in m[1]]
     if adjust:
-        mesh=mlab.pipeline.triangular_mesh_source(y,x,z,t) # coordinates are flipped to error in my meshes
+        mesh=mlab.pipeline.triangular_mesh_source(x,y,z,t) # coordinates are flipped to error in my meshes
     else:
         mesh=mlab.pipeline.triangular_mesh_source(x,y,z,t) # coordinates are flipped to error in my meshes
     mesh.mlab_source.scalars=[1]*len(t)

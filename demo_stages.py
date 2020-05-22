@@ -40,7 +40,7 @@ if __name__=='__main__':
     # setting sampling<1.5 generates very dense graphs that were hard to contract at the end
     sampling=1.0
     
-    speed_param=0.01 # speed of contraction process (smaller value-->faster dynamics)
+    speed_param=0.1 # speed of contraction process (smaller value-->faster dynamics)
     dist_param=0.01 # [0,1] controls contraction based on connectivitiy in graph
     med_param=1.0 # [0,1] controls contraction based on distance map (obtained from binary image)
     
@@ -50,7 +50,7 @@ if __name__=='__main__':
     #contraction
     degree_threshold=5.0 # used to check if a node is a skeletal node
     clustering_resolution=1.0 # controls the amount of graph dicimation (due to clustering) at each step
-    stop_param=0.005 # controls the convergence criterion
+    stop_param=0.002 # controls the convergence criterion
     n_free_iteration=10 #number of iteration without checking for convergence
     
     #refinement
@@ -77,7 +77,7 @@ if __name__=='__main__':
     generate=GenerateGraph(s)
     generate.UpdateGridGraph(Sampling=sampling)
     graph=generate.GetOutput()
-
+    gg=graph.copy()
 
     
     # contract graph
@@ -108,7 +108,7 @@ if __name__=='__main__':
     #-------------------------------------------------------------------------#
 
 #    # save graph
-    WritePajek(path='', name='mygraph.pajek', graph=fixG(gc))
+    WritePajek(path='', name='mygraph.pajek', graph=fixG(gr))
 
 #    #load graph    
     loaded_g=ReadPajek('mygraph.pajek').GetOutput()
@@ -119,7 +119,7 @@ if __name__=='__main__':
     # Visulaize
     #-------------------------------------------------------------------------#
 
-    #from VascGraph.GraphLab import GraphPlot, StackPlot, MainDialogue
+    from VascGraph.GraphLab import GraphPlot, StackPlot, MainDialogue
     mlab.figure()
     stack_plot=StackPlot()
     stack_plot.Update(s)
@@ -127,7 +127,12 @@ if __name__=='__main__':
     graph_plot.Update(loaded_g)
 
 
-
+    stack_plot=vg.GraphLab.StackPlot(new_engine=True)
+    stack_plot.Update(s)
+    gplot=vg.GraphLab.GraphPlot()
+    gplot.Update(vg.Tools.CalcTools.fixG(gg))
+    gplot.SetGylphSize(.5)
+    gplot.SetTubeRadius(.2)
 
 
 

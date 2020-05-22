@@ -11,8 +11,11 @@ Created on Sun Apr  5 23:36:33 2020
 
 from VascGraph.Skeletonize import Skeleton
 from VascGraph.GraphIO import ReadStackMat
-from VascGraph.GraphLab import StackPlot
+from VascGraph.GraphLab import StackPlot, GraphPlot
 from VascGraph.Tools.VisTools import visG
+from VascGraph.GraphIO import ReadStackMat, ReadPajek, WritePajek
+from VascGraph.Tools.CalcTools import fixG
+
 
 if __name__=='__main__':
 
@@ -20,11 +23,15 @@ if __name__=='__main__':
     This demo explains how graphing of scalable inputs can be done through patch-based graphig and 	stiching 		
     '''
     s=ReadStackMat('synth2.mat').GetOutput()
-
+    
+    # import skimage.io as skio
+    # s=skio.imread('/home/rdamseh/forSreekanth2/cropped_segmentation.tif')
+    # s=(s>0).astype(int)
+    
     #contraction
     speed_param=0.05
-    dist_param=0.0
-    med_param=1.0
+    dist_param=0.5
+    med_param=0.5
     degree_threshold=10.0 # used to check if a node is a skeletal node
     sampling=1
     clustering_r=1
@@ -63,12 +70,22 @@ if __name__=='__main__':
                            n_parallel=n_parallel)
     
     fullgraph=sk.GetOutput()
+    
+    # save graph
+    WritePajek(path='', name='mygraph.pajek', graph=fixG(fullgraph))
+
+    #load graph    
+    loaded_g=ReadPajek('mygraph.pajek').GetOutput()
 
     print('--Visualize final skeleton ...')
     splot = StackPlot(new_engine=True)    
     splot.Update((s>0).astype(int))
-    visG(fullgraph)
-
+    
+    gplot=GraphPlot()
+    gplot.Update(loaded_g)
+    gplot.SetTubeRadiusByScale(True)
+    gplot.SetTubeRadiusByColor(True)
+    gplot.SetTubeRadius(3)
 
 
 

@@ -59,6 +59,7 @@ VascGraph/Skeletonize/ContractGraph.py
 VascGraph/Skeletonize/GenerateGraph.py
 VascGraph/Skeletonize/RefineGraph.py
 VascGraph/Skeletonize/RefineGraphRadius.py
+VascGraph/Skeletonize/Skeleton.py
 VascGraph/Skeletonize/__init__.py
 VascGraph/Skeletonize/sknw.py
 VascGraph/Tools/CalcTools.py

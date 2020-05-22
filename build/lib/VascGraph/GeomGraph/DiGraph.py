@@ -620,6 +620,7 @@ class DiGraph(DiG):
             
     def RefineSegments(self, max_n=None, degree=15, fix_curve=True):
         
+        
         refined_number=''
         refined_curve=''
         
@@ -627,10 +628,10 @@ class DiGraph(DiG):
             degree=15
             print('--\'degree\' should be less than 15')
         
-        if max_n>55:
-            max_n=55
-            print('--\'max_n\' should be less than 15')
-        
+        if type(max_n)==int:
+            if max_n>55:
+                max_n=55
+                print('--\'max_n\' should be less than 15')
                 
         def updatepos(n, pos):
             self.node[n]['pos']=pos
@@ -648,6 +649,7 @@ class DiGraph(DiG):
             remnodes=[]
             
             for end, p in pathes0:
+                    
                 midp=p[1:-1] # avoid end nodes
                 lenmidp=float(len(midp))
                 ind=np.arange(0, lenmidp, lenmidp/(max_n-2)).astype(int)
@@ -661,14 +663,15 @@ class DiGraph(DiG):
                 remnodes.append(rem)
                 
                 #edges to be removed
-                ed=zip(p[:-1], p[1:])
+                ed=list(zip(p[:-1], p[1:]))
                 ed.extend([(p[0],p[1])])
                 self.remove_edges_from(ed)
                 
                 # new edges
-                newed=zip(newp[:-1], newp[1:])
+                newed=list(zip(newp[:-1], newp[1:]))
                 newed.extend([(p[0],newp[0]), (newp[-1],p[-1])])
                 self.add_edges_from(newed)
+
                 
             remnodes=[k2 for k1 in remnodes for k2 in k1]
             self.remove_nodes_from(remnodes)
@@ -693,19 +696,23 @@ class DiGraph(DiG):
             posdict=dict(zip(nodes, pos))            
             
             for ends, p in pathes:
+                
                 nn=len(p)
-                if nn>2:
+                if nn>degree:
+                    print(nn, degree)
                     poss = np.array([posdict[k] for k in p])
                     if len(poss)>=degree:
                         ind=getind(len(poss)) # get a maximim of 15 control points
                         poss=poss[ind, :]
                     x, y, z = poss[:,0], poss[:,1], poss[:,2]
                     xyz = np.asfortranarray([x,y,z])
+                    print(xyz)
                     curve = bz.Curve(xyz, degree=degree)
                     stp=1/float(nn)
                     steps=np.arange(stp, 1-stp, stp)
                     new_pos=[np.ravel(curve.evaluate(i)) for i in steps]
                     dumb=[updatepos(n, pp) for n, pp in zip(p[1:-1], new_pos)]
+                
             refined_curve='\n  Interpolating with bezier curvers of degree '+str(degree)+'.'
 
         if refined_curve!='' or refined_number!='':

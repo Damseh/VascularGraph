@@ -12,6 +12,8 @@ import scipy.ndimage as image
 from time import time
 
 from scipy.ndimage import filters as filt
+import numpy as np
+
 
 
 class GenerateGraph:
@@ -33,25 +35,11 @@ class GenerateGraph:
         self.Area=np.sum(self.Label>0)
     
     def __CalculateDistMap(self):
-#
-#        XY=[self.Label[i,:,:] for i in range(self.Shape[0])] #Z-XY
-#        ZX=[self.Label[:,:,i] for i in range(self.Shape[2])] #Y-ZX 
-#        ZY=[self.Label[:,i,:] for i in range(self.Shape[1])] #X-ZY
-#        
-#        DistXY=np.array([image.morphology.distance_transform_edt(i) for i in XY])
-#        DistZX=np.array([image.morphology.distance_transform_edt(i) for i in ZX])
-#        DistZY=np.array([image.morphology.distance_transform_edt(i) for i in ZY])
-#        
-#        DistZX=np.rollaxis(DistZX, 0, 3)
-#        DistZY=np.rollaxis(DistZY, 0, 2)      
-#        
-#        DistMap_=np.maximum(DistXY, DistZX) 
-#        DistMap=np.maximum(DistMap_, DistZY)
-#    
-#        DistMap=filt.maximum_filter(DistMap, size=(3,3,3))
+            
         if self.DistMap is None:
-            DistMap=image.morphology.distance_transform_edt(self.Label)
-            self.DistMap=DistMap
+            #self.DistMap=image.morphology.distance_transform_edt(self.Label)
+            self.DistMap=DistMap3D(self.Label)
+
     
     def __AssignDistMapToGraph(self):
         
@@ -230,11 +218,29 @@ class GenerateGraph:
         self.Graph.add_edges_from(Connections3)
 
         #exclude nodes with less than 2 neighbors
-        NNodesToExclude=1
-        while NNodesToExclude>0:
-            NodesToExclude=[i for i in self.Graph.GetNodes() if len(self.Graph.GetNeighbors(i))<=2]
-            self.Graph.remove_nodes_from(NodesToExclude)
-            NNodesToExclude=len(NodesToExclude)
+        # NNodesToExclude=1
+        # while NNodesToExclude>0:
+        #     NodesToExclude=[i for i in self.Graph.GetNodes() if len(self.Graph.GetNeighbors(i))<=2]
+        #     self.Graph.remove_nodes_from(NodesToExclude)
+        #     NNodesToExclude=len(NodesToExclude)
+        
+        
+        # reconnect nodes with less that 2 edges (request from Sreekanth )
+        pos=np.array(self.Graph.GetNodesPos())
+        nodes=np.array(self.Graph.GetNodes())
+        NodesToModify=[i for i in self.Graph.GetNodes() if len(self.Graph.GetNeighbors(i))<=2]
+        pos_xc_nodes=np.array([self.Graph.node[k]['pos'] for k in NodesToModify])
+        new_edges=[]
+        for nn, pp in zip(NodesToModify, pos_xc_nodes):
+            checkp=pos-pp[None, :]
+            checkp=np.sum(checkp**2, axis=1)**0.5
+            ed_nodes=nodes[checkp<=2**0.5]
+            new_ed=[[nn, kk] for kk in ed_nodes if kk!=nn]
+            #print(len(new_ed))
+            new_edges.append(new_ed)
+        new_edges=[k2 for k1 in new_edges for k2 in k1]
+        self.Graph.add_edges_from(new_edges)
+            
     
         # label extremity nodes at imageborders
         if self.label_ext:

@@ -94,12 +94,12 @@ class ValidateNetMets:
         
         def plot(g, color):
             
-            plot=GraphPlot()
-            plot.Update(g)
-            plot.SetGylphSize(.01)
-            plot.SetTubeRadius(2)
-            plot.SetTubeColor(color)
-            plot.SetTubeRadiusByScale(True)
+            gplot=GraphPlot()
+            gplot.Update(g)
+            gplot.SetGylphSize(.01)
+            gplot.SetTubeRadius(2)
+            gplot.SetTubeColor(color)
+            gplot.SetTubeRadiusByScale(True)
             
         
         bgcolor=(1,1,1)

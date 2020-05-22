@@ -450,7 +450,7 @@ class Graph(G):
     
         
         
-    def ToDirected(self, Sources=[], Sinks=[]):
+    def ToDirected(self, Sources=[], Sinks=[], mode='auto'):
          
         '''
         This function generate directed graphs from undirected graph and label di-graph nodes with the branch level 
@@ -474,9 +474,16 @@ class Graph(G):
         if len(Sources)==0:
             Sources, Sinks = self.GetSourcesSinks()
     
-        if len(Sources)==0:
-            print('Sources need to be set on graph!')
-            raise ValueError
+        if mode!='auto':
+            if len(Sources)==0:
+                print('Sources need to be set on graph!')
+                raise ValueError
+        else:
+            if len(Sources)==0:
+                node=self.GetJuntionNodes(bifurcation=[1])[0]
+                Sources=[node]
+                self.node[node]['source']=1
+            
     
         roots = Sources
         g_object = GraphObject(self) 

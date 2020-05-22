@@ -8,7 +8,7 @@ Created on Wed Mar 25 17:26:17 2020
 
 from VascGraph.Skeletonize import GenerateGraph, ContractGraph, RefineGraph
 from VascGraph.GeomGraph import Graph as EmptyGraph
-from VascGraph.Tools.CalcTools import fixG
+from VascGraph.Tools.CalcTools import fixG, DistMap3D
 
 import numpy as np
 import scipy.ndimage as image
@@ -273,7 +273,9 @@ class Skeleton:
             
             
         # obtain distance map
-        self.label=image.morphology.distance_transform_edt(self.label)
+        #self.label=image.morphology.distance_transform_edt(self.label)
+        self.label=DistMap3D(self.label)
+        
         
         # patching
         print('--Extract patches ...')

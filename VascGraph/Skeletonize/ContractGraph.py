@@ -189,7 +189,7 @@ class ContractGraph(BaseGraph):
             Ind1=Ind1+np.array(range(NNodes))[:,None]
             Ind1=Ind1[MaskMat].astype(int) 
             Ind2=[NodesIndices[i] for i in NeighborsMat[MaskMat].astype(int)]               
-            A[Ind1.tolist() ,Ind2]=DistMat[MaskMat]*DistParam        
+            A[Ind1.tolist(), Ind2] = DistMat[MaskMat]*DistParam        
             A[NodesOrderedInd ,NodesOrderedInd]=-1*DistParam         
      
            # insert MedValues
@@ -231,7 +231,7 @@ class ContractGraph(BaseGraph):
             
         DistValues=DistMat[MaskMat] 
         MedValues=MedMat[MaskMat]     
-        SpeedValues=(self.SkeletalMask==False)*self.SpeedParam+(self.SkeletalMask)*10*self.SpeedParam # skl nodes will move at lower speed
+        SpeedValues=(self.SkeletalMask==False)*self.SpeedParam+(self.SkeletalMask)*self.Alleviate_param*self.SpeedParam # skl nodes will move at lower speed
         
         # build A and B
         A=GetAMat(NeighborsMat, MaskMat, NodesIndices, self.NNodes,
@@ -360,7 +360,8 @@ class ContractGraph(BaseGraph):
                      DegreeThreshold=None,
                      NFreeIteration=1,
                      ClusteringResolution=1.0,
-                     StopParam=.01):
+                     StopParam=.01,
+                     Alleviate_param=10):
         
         self.DistParam=DistParam
         self.MedParam=MedParam
@@ -369,6 +370,7 @@ class ContractGraph(BaseGraph):
         self.NFreeIteration=NFreeIteration
         self.ClusteringResolution=ClusteringResolution
         self.StopParam=StopParam   
+        self.Alleviate_param=Alleviate_param
         self.__ContractGraph()
   
     def UpdateExt(self, DistParam=1,
@@ -377,7 +379,8 @@ class ContractGraph(BaseGraph):
                      DegreeThreshold=None,
                      NFreeIteration=1,
                      ClusteringResolution=1.0,
-                     StopParamExt=.01):
+                     StopParamExt=.01,
+                     Alleviate_param=10):
         
         self.DistParam=DistParam
         self.MedParam=MedParam
@@ -385,7 +388,8 @@ class ContractGraph(BaseGraph):
         self.DegreeThreshold=DegreeThreshold
         self.NFreeIteration=NFreeIteration
         self.ClusteringResolution=ClusteringResolution
-        self.StopParamExt=StopParamExt       
+        self.StopParamExt=StopParamExt  
+        self.Alleviate_param=Alleviate_param
         self.__ContractGraphExt()  
     
   
@@ -397,7 +401,8 @@ class ContractGraph(BaseGraph):
                      NFreeIteration=1,
                      ClusteringResolution=1.0,
                      StopParam=.01, 
-                     update_positions=False):
+                     update_positions=True,
+                     Alleviate_param=10):
         
         self.DistParam=DistParam
         self.MedParam=MedParam
@@ -406,6 +411,7 @@ class ContractGraph(BaseGraph):
         self.NFreeIteration=NFreeIteration
         self.ClusteringResolution=ClusteringResolution
         self.StopParam=StopParam 
+        self.Alleviate_param=Alleviate_param
         
         self.__ContractGraphOneStep(update_positions=update_positions)
 

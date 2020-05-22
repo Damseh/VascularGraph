@@ -135,7 +135,13 @@ class ReadPajek():
                 G.node[n]['r']=float(radius.split('[')[1].split(']')[0])
             except:
                 pass
-            
+                      
+            # add radius
+            try:
+                radius=node['r'].encode()
+                G.node[n]['r']=float(str(radius).split('[')[1].split(']')[0])
+            except:
+                pass            
             
             # add radius
             try:

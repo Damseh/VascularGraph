@@ -10,6 +10,8 @@ import numpy as np
 import scipy.ndimage as image
 import networkx as nx
 from scipy import sparse
+from scipy.ndimage import filters as filt
+
 
 def AssignToClusters(pos, resolution=1.0):
     '''
@@ -771,4 +773,22 @@ def TransferAttributesFaster(DiG, G, warning=True):
             except: pass
 
 
+def DistMap3D(Label):
+        
+    Shape=np.shape(Label)
+    XY=[Label[i,:,:] for i in range(Shape[0])] #Z-XY
+    ZX=[Label[:,:,i] for i in range(Shape[2])] #Y-ZX 
+    ZY=[Label[:,i,:] for i in range(Shape[1])] #X-ZY
+    
+    DistXY=np.array([image.morphology.distance_transform_edt(i) for i in XY])
+    DistZX=np.array([image.morphology.distance_transform_edt(i) for i in ZX])
+    DistZY=np.array([image.morphology.distance_transform_edt(i) for i in ZY])
+    
+    DistZX=np.rollaxis(DistZX, 0, 3)
+    DistZY=np.rollaxis(DistZY, 0, 2)      
+    
+    DistMap_=np.maximum(DistXY, DistZX) 
+    DistMap=np.maximum(DistMap_, DistZY)
+
+    return DistMap
 
