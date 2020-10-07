@@ -30,6 +30,7 @@ VascGraph/GeomGraph/Graph.py
 VascGraph/GeomGraph/GraphObject.py
 VascGraph/GeomGraph/__init__.py
 VascGraph/GraphIO/GetDirected.py
+VascGraph/GraphIO/ReadCASX.py
 VascGraph/GraphIO/ReadCGAL.py
 VascGraph/GraphIO/ReadCenterlineCSV.py
 VascGraph/GraphIO/ReadGraphFromXLSX.py

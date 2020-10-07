@@ -16,11 +16,15 @@ A Python package to generate graph-based anatomical models of vascular structure
 
 Papers
 ------
-@article{damseh2019laplacian,
-  title={Laplacian Flow Dynamics on Geometric Graphs for Anatomical Modeling of Cerebrovascular Networks},
+@article{damseh2020laplacian,
   author={Damseh, Rafat and Delafontaine-Martel, Patrick and Pouliot, Philippe and Cheriet, Farida and Lesage, Frederic},
-  journal={arXiv preprint arXiv:1912.10003},
-  year={2019}}
+  journal={IEEE Transactions on Medical Imaging}, 
+  title={Laplacian Flow Dynamics on Geometric Graphs for Anatomical Modeling of Cerebrovascular Networks}, 
+  year={2020},
+  volume={},
+  number={},
+  pages={1-1},
+  publisher={IEEE}}
 
 @article{damseh2018automatic,
   title={Automatic Graph-Based Modeling of Brain Microvessels Captured With Two-Photon Microscopy},
