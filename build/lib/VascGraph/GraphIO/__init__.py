@@ -18,3 +18,4 @@ from VascGraph.GraphIO.ReadGraphFromXLSX import ReadGraphFromXLSX
 from VascGraph.GraphIO.ReadSOAX import ReadSOAX
 from VascGraph.GraphIO.ReadVTrails import ReadVTrails
 from VascGraph.GraphIO.ReadCASX import ReadCASX
+from VascGraph.GraphIO.ReadNWKCS31 import ReadNWKCS31
